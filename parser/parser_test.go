@@ -79,6 +79,15 @@ func TestParser(t *testing.T) {
 				"z": 6,
 			},
 		},
+		{
+			input:    "assert (x + y) * 4",
+			expected: 0,
+			succeed: true,
+			valueMap: map[string]float64{
+				"x": 2,
+				"y": -2,
+			},
+		},
 	}
 
 	for _, testCase := range testCases {
