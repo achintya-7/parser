@@ -1,0 +1,36 @@
+package parser
+
+import (
+	"fmt"
+	"parser/constants"
+)
+
+type PrefixExpression struct {
+	Token    constants.Token
+	Operator string
+	Right    Expression
+}
+
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Lexeme }
+
+func (pe *PrefixExpression) Evaluate() (float64, error) {
+	right, err := pe.Right.Evaluate()
+	if err != nil {
+		return 0, err
+	}
+
+	switch pe.Operator {
+	case "!":
+		if right == 0 {
+			return 1, nil
+		} else {
+			return 0, nil
+		}
+	default:
+		return 0, fmt.Errorf("unknown operator: %s", pe.Operator)
+	}
+}
+
+func (pe *PrefixExpression) String() string {
+	return fmt.Sprintf("(%s%s)", pe.Operator, pe.Right.String())
+}
