@@ -33,12 +33,7 @@ func main() {
 			continue
 		}
 
-		result, err := program.Evaluate()
-		if err != nil {
-			fmt.Printf("Evaluation error: %s\n", err)
-		} else {
-			fmt.Printf("Result: %v\n", result)
-		}
+		program.Evaluate()
 
 		fmt.Println()
 	}

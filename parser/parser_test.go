@@ -8,61 +8,61 @@ import (
 )
 
 type ParserTestCase struct {
-	input    string
-	expected float64
-	succeed  bool
-	valueMap map[string]float64
+	input           string
+	expectedResults []float64
+	succeed         bool
+	valueMap        map[string]float64
 }
 
 func TestParser(t *testing.T) {
 	testCases := []ParserTestCase{
 		{
-			input:    "assert !(1 * 5) == 0",
-			expected: 0,
-			succeed: true,
+			input:           "assert !(1 * 5) == 0",
+			expectedResults: []float64{0},
+			succeed:         true,
 		},
 		{
-			input:    "assert 1 + 2 * 3 == 5",
-			expected: 1,
-			succeed:  false,
+			input:           "assert 1 + 2 * 3 == 5",
+			expectedResults: []float64{1},
+			succeed:         false,
 		},
 		{
-			input:    "assert 1 + 2 * 3 == 7",
-			expected: 0,
-			succeed: true,
+			input:           "assert 1 + 2 * 3 == 7",
+			expectedResults: []float64{0},
+			succeed:         true,
 		},
 		{
-			input:    "assert (1 + 2) * 3 == 9",
-			expected: 0,
-			succeed: true,
+			input:           "assert (1 + 2) * 3 == 9",
+			expectedResults: []float64{0},
+			succeed:         true,
 		},
 		{
-			input:    "assert 1 + 2 == (1 / 2) * 6",
-			expected: 0,
-			succeed: true,
+			input:           "assert 1 + 2 == (1 / 2) * 6",
+			expectedResults: []float64{0},
+			succeed:         true,
 		},
 		{
-			input:    "assert 1 + 2 * 3",
-			expected: 7,
-			succeed: false,
+			input:           "assert 1 + 2 * 3",
+			expectedResults: []float64{7},
+			succeed:         false,
 		},
 		{
-			input:    "assert (2 + 2) * 3",
-			expected: 12,
-			succeed: false,
+			input:           "assert (2 + 2) * 3",
+			expectedResults: []float64{12},
+			succeed:         false,
 		},
 		{
-			input:    "assert (x + 2) * 3",
-			expected: 12,
-			succeed: false,
+			input:           "assert (x + 2) * 3",
+			expectedResults: []float64{12},
+			succeed:         false,
 			valueMap: map[string]float64{
 				"x": 2,
 			},
 		},
 		{
-			input:    "assert x + y == z",
-			expected: 0,
-			succeed: true,
+			input:           "assert x + y == z",
+			expectedResults: []float64{0},
+			succeed:         true,
 			valueMap: map[string]float64{
 				"x": 1,
 				"y": 2,
@@ -70,9 +70,9 @@ func TestParser(t *testing.T) {
 			},
 		},
 		{
-			input:    "assert (x + y) * 4 == z * 2",
-			expected: 0,
-			succeed: true,
+			input:           "assert (x + y) * 4 == z * 2",
+			expectedResults: []float64{0},
+			succeed:         true,
 			valueMap: map[string]float64{
 				"x": 1,
 				"y": 2,
@@ -80,13 +80,23 @@ func TestParser(t *testing.T) {
 			},
 		},
 		{
-			input:    "assert (x + y) * 4",
-			expected: 0,
-			succeed: true,
+			input:           "assert (x + y) * 4",
+			expectedResults: []float64{0},
+			succeed:         true,
 			valueMap: map[string]float64{
 				"x": 2,
 				"y": -2,
 			},
+		},
+		{
+			input:           "assert !(1 * 5) == 0\n assert 1 + 2 * 3 == 7",
+			expectedResults: []float64{0, 0},
+			succeed:         true,
+		},
+		{
+			input:           "assert !(1 * 5) == 0\n assert 1 + 2 * 3 == 5",
+			expectedResults: []float64{0, 1},
+			succeed:         false,
 		},
 	}
 
@@ -105,12 +115,8 @@ func TestParser(t *testing.T) {
 			program.SetValueMap(testCase.valueMap)
 		}
 
-		result, err := program.Evaluate()
-		if testCase.succeed {
-			require.NoError(t, err)
-		} else {
-			require.Error(t, err)
-		}
-		require.Equal(t, testCase.expected, result)
+		results, _, success := program.Evaluate()
+		require.Equal(t, testCase.succeed, success)
+		require.Equal(t, testCase.expectedResults, results)
 	}
 }
