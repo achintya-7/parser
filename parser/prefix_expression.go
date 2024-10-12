@@ -13,6 +13,7 @@ type PrefixExpression struct {
 
 func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Lexeme }
 
+// todo: verify if this is correct
 func (pe *PrefixExpression) Evaluate() (float64, error) {
 	right, err := pe.Right.Evaluate()
 	if err != nil {

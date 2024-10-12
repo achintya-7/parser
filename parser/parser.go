@@ -244,17 +244,3 @@ func (p *Parser) curPrecedence() int {
 	}
 	return LOWEST
 }
-
-func (p *Program) Evaluate() (float64, error) {
-	var result float64
-	var err error
-	for i, stmt := range p.Statements {
-		fmt.Printf("Evaluating statement %d: %s\n", i, stmt.String())
-
-		result, err = stmt.Evaluate()
-		if err != nil {
-			return 0, err
-		}
-	}
-	return result, nil
-}

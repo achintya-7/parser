@@ -5,8 +5,8 @@ import (
 	"parser/constants"
 )
 
-type // InfixExpression is for expressions like 5 + 5, 3 * 3, etc.
-InfixExpression struct {
+// InfixExpression is for expressions like 5 + 5, 3 * 3, etc.
+type InfixExpression struct {
 	Token    constants.Token
 	Operator string
 	Left     Expression
@@ -18,15 +18,13 @@ func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Lexeme }
 func (ie *InfixExpression) Evaluate() (float64, error) {
 	left, err := ie.Left.Evaluate()
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
-	fmt.Println("Left: ", left)
 
 	right, err := ie.Right.Evaluate()
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
-	fmt.Println("Right: ", right)
 
 	fmt.Printf("Evaluating: %s %s %s\n", ie.Left.String(), ie.Operator, ie.Right.String())
 
@@ -45,9 +43,9 @@ func (ie *InfixExpression) Evaluate() (float64, error) {
 		}
 	case "==":
 		if left == right {
-			return 1, nil
-		} else {
 			return 0, nil
+		} else {
+			return 1, nil
 		}
 	case "<=":
 		if left != right {

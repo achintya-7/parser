@@ -3,42 +3,52 @@ package parser
 import (
 	"parser/lexer"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 type ParserTestCase struct {
 	input    string
 	expected float64
+	succeed  bool
 }
 
 func TestParser(t *testing.T) {
 	testCases := []ParserTestCase{
 		{
 			input:    "assert !(1 * 5) == 0",
-			expected: 1,
+			expected: 0,
+			succeed: true,
 		},
 		{
 			input:    "assert 1 + 2 * 3 == 5",
-			expected: 0,
+			expected: 1,
+			succeed:  false,
 		},
 		{
 			input:    "assert 1 + 2 * 3 == 7",
-			expected: 1,
+			expected: 0,
+			succeed: true,
 		},
 		{
 			input:    "assert (1 + 2) * 3 == 9",
-			expected: 1,
+			expected: 0,
+			succeed: true,
 		},
 		{
 			input:    "assert 1 + 2 == (1 / 2) * 6",
-			expected: 1,
+			expected: 0,
+			succeed: true,
 		},
 		{
 			input:    "assert 1 + 2 * 3",
 			expected: 7,
+			succeed: false,
 		},
 		{
 			input:    "assert (2 + 2) * 3",
 			expected: 12,
+			succeed: false,
 		},
 	}
 
@@ -54,10 +64,11 @@ func TestParser(t *testing.T) {
 		}
 
 		result, err := program.Evaluate()
-		if err != nil {
-			t.Errorf("Evaluation error: %s", err)
-		} else if result != testCase.expected {
-			t.Errorf("Expected %v, got %v", testCase.expected, result)
+		if testCase.succeed {
+			require.NoError(t, err)
+		} else {
+			require.Error(t, err)
 		}
+		require.Equal(t, testCase.expected, result)
 	}
 }
