@@ -1,6 +1,9 @@
 package parser
 
-import "parser/constants"
+import (
+	"fmt"
+	"parser/constants"
+)
 
 type Identifier struct {
 	Token constants.Token
@@ -11,8 +14,12 @@ func (i *Identifier) TokenLiteral() string { return i.Token.Lexeme }
 
 // todo
 func (i *Identifier) Evaluate() (float64, error) {
-	// For simplicity, we'll just return 1 for any identifier
-	return 1, nil
+	value, ok := ValueMap[i.Value]
+	if ok {
+		return value, nil
+	} else {
+		return 0, fmt.Errorf("unknown identifier: %s", i.Value)
+	}
 }
 
 func (i *Identifier) String() string {

@@ -11,6 +11,7 @@ type ParserTestCase struct {
 	input    string
 	expected float64
 	succeed  bool
+	valueMap map[string]float64
 }
 
 func TestParser(t *testing.T) {
@@ -50,6 +51,34 @@ func TestParser(t *testing.T) {
 			expected: 12,
 			succeed: false,
 		},
+		{
+			input:    "assert (x + 2) * 3",
+			expected: 12,
+			succeed: false,
+			valueMap: map[string]float64{
+				"x": 2,
+			},
+		},
+		{
+			input:    "assert x + y == z",
+			expected: 0,
+			succeed: true,
+			valueMap: map[string]float64{
+				"x": 1,
+				"y": 2,
+				"z": 3,
+			},
+		},
+		{
+			input:    "assert (x + y) * 4 == z * 2",
+			expected: 0,
+			succeed: true,
+			valueMap: map[string]float64{
+				"x": 1,
+				"y": 2,
+				"z": 6,
+			},
+		},
 	}
 
 	for _, testCase := range testCases {
@@ -61,6 +90,10 @@ func TestParser(t *testing.T) {
 		if len(p.Errors()) != 0 {
 			t.Errorf("Parser errors: %v", p.Errors())
 			continue
+		}
+
+		if len(testCase.valueMap) > 0 {
+			program.SetValueMap(testCase.valueMap)
 		}
 
 		result, err := program.Evaluate()

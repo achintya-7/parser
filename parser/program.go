@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+var (
+	ValueMap map[string]float64
+)
+
 type Program struct {
 	Statements []Statement
 }
@@ -14,6 +18,10 @@ func (p *Program) TokenLiteral() string {
 		return p.Statements[0].TokenLiteral()
 	}
 	return ""
+}
+
+func (p *Program) SetValueMap(vm map[string]float64) {
+	ValueMap = vm
 }
 
 func (p *Program) Evaluate() (float64, error) {
