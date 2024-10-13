@@ -203,6 +203,16 @@ func TestDualParser(t *testing.T) {
 		require.True(t, success)
 		require.Equal(t, testCase.partialEvaluatedInput, results)
 
+
+		l = lexer.NewLexer(results[0])
+		p = NewParser(l)
+		program = p.ParseProgram()
+
+		if len(p.Errors()) != 0 {
+			t.Errorf("Parser errors: %v", p.Errors())
+			continue
+		}
+
 		parsedResults, _, success := program.Evaluate()
 		require.True(t, success)
 		require.Equal(t, testCase.expectedResults, parsedResults)

@@ -6,7 +6,7 @@ type TokenType int
 
 const (
 	TOKEN_EOF TokenType = iota
-	TOKEN_IDENTIFIER
+	TOKEN_VARIABLE
 	TOKEN_NUMBER
 	TOKEN_PLUS
 	TOKEN_MINUS

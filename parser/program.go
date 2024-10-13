@@ -12,13 +12,6 @@ type Program struct {
 	Statements []Statement
 }
 
-func (p *Program) TokenLiteral() string {
-	if len(p.Statements) > 0 {
-		return p.Statements[0].TokenLiteral()
-	}
-	return ""
-}
-
 func (p *Program) SetValueMap(vm map[string]float64) {
 	ValueMap = vm
 }

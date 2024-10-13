@@ -14,7 +14,7 @@ type Parser struct {
 	errors    []string
 }
 
-func NewParser(l lexer.Lexerer) *Parser {
+func NewParser(l lexer.Lexerer) Parserer {
 	p := &Parser{l: l, errors: []string{}}
 	p.nextToken()
 	p.nextToken()
@@ -30,7 +30,7 @@ func (p *Parser) Errors() []string {
 	return p.errors
 }
 
-func (p *Parser) printAST(node interface{}) {
+func (p *Parser) printAST(node any) {
 	switch n := node.(type) {
 	case *Program:
 		fmt.Println("Program:")
@@ -44,7 +44,7 @@ func (p *Parser) printAST(node interface{}) {
 	}
 }
 
-func (p *Parser) ParseProgram() *Program {
+func (p *Parser) ParseProgram() ProgramEvaluator {
 	program := &Program{}
 	program.Statements = []Statement{}
 
@@ -105,8 +105,8 @@ func (p *Parser) parseExpression(precedence int) Expression {
 
 func (p *Parser) prefixParseFns(tokenType constants.TokenType) func() Expression {
 	switch tokenType {
-	case constants.TOKEN_IDENTIFIER:
-		return p.parseIdentifier
+	case constants.TOKEN_VARIABLE:
+		return p.parseVariable
 	case constants.TOKEN_NUMBER:
 		return p.parseNumberLiteral
 	case constants.TOKEN_NOT:
@@ -127,8 +127,8 @@ func (p *Parser) infixParseFns(tokenType constants.TokenType) func(Expression) E
 	}
 }
 
-func (p *Parser) parseIdentifier() Expression {
-	return &Identifier{Token: p.curToken, Value: p.curToken.Lexeme}
+func (p *Parser) parseVariable() Expression {
+	return &Variable{Token: p.curToken, Value: p.curToken.Lexeme}
 }
 
 func (p *Parser) parseNumberLiteral() Expression {

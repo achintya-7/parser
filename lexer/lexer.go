@@ -9,7 +9,7 @@ import (
 type Lexerer interface {
 	NewToken() constants.Token
 	readNumber() string
-	readIdentifer() string
+	readVariable() string
 	peakChar() byte
 	skipWhitespace()
 }
@@ -91,8 +91,8 @@ func (l *Lexer) NewToken() constants.Token {
 			skipReadChar = true
 		} else if unicode.IsLetter(rune(l.ch)) {
 			tok = constants.Token{
-				Type:   constants.TOKEN_IDENTIFIER,
-				Lexeme: l.readIdentifer(),
+				Type:   constants.TOKEN_VARIABLE,
+				Lexeme: l.readVariable(),
 			}
 			skipReadChar = true
 		} else {
@@ -120,7 +120,7 @@ func (l *Lexer) readNumber() string {
 	return l.input[currentPosition:l.position]
 
 }
-func (l *Lexer) readIdentifer() string {
+func (l *Lexer) readVariable() string {
 	currentPosition := l.position
 
 	for unicode.IsLetter(rune(l.ch)) {
