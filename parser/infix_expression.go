@@ -15,6 +15,35 @@ type InfixExpression struct {
 
 func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Lexeme }
 
+func (ie *InfixExpression) PartialEvaluate() (string, error) {
+	left, err := ie.Left.PartialEvaluate()
+	if err != nil {
+		return "", err
+	}
+
+	right, err := ie.Right.PartialEvaluate()
+	if err != nil {
+		return "", err
+	}
+
+	_, err = IsConstant(left)
+	if err != nil {
+		return fmt.Sprintf("%s %s %s", left, ie.Operator, right), nil
+	}
+
+	_, err = IsConstant(right)
+	if err != nil {
+		return fmt.Sprintf("%s %s %s", left, ie.Operator, right), nil
+	}
+
+	evaluatedValue, err := ie.Evaluate()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%.2f", evaluatedValue), nil
+}
+
 func (ie *InfixExpression) Evaluate() (float64, error) {
 	left, err := ie.Left.Evaluate()
 	if err != nil {

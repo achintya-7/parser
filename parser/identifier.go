@@ -22,6 +22,10 @@ func (i *Identifier) Evaluate() (float64, error) {
 	}
 }
 
+func (i *Identifier) PartialEvaluate() (string, error) {
+	return i.Value, nil
+}
+
 func (i *Identifier) String() string {
 	return i.Value
 }

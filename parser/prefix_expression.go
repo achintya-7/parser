@@ -32,6 +32,25 @@ func (pe *PrefixExpression) Evaluate() (float64, error) {
 	}
 }
 
+func (pe *PrefixExpression) PartialEvaluate() (string, error) {
+	right, err := pe.Right.PartialEvaluate()
+	if err != nil {
+		return "", err
+	}
+
+	_, err = IsConstant(right)
+	if err != nil {
+		return fmt.Sprintf("%s%s", pe.Operator, right), nil
+	}
+
+	evaluatedValue, err := pe.Evaluate()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%.2f", evaluatedValue), nil
+}
+
 func (pe *PrefixExpression) String() string {
 	return fmt.Sprintf("(%s%s)", pe.Operator, pe.Right.String())
 }

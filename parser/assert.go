@@ -27,6 +27,15 @@ func (as *AssertStatement) Evaluate() (float64, error) {
 	return value, nil
 }
 
+func (as *AssertStatement) PartialEvaluate() (string, error) {
+	value, err := as.Expression.PartialEvaluate()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("assert %s", value), nil
+}
+
 func (as *AssertStatement) String() string {
 	return fmt.Sprintf("assert %s", as.Expression.String())
 }

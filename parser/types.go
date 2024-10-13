@@ -5,6 +5,7 @@ type (
 	Node interface {
 		TokenLiteral() string
 		Evaluate() (float64, error)
+		PartialEvaluate() (string, error)
 	}
 
 	Statement interface {
