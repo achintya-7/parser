@@ -122,10 +122,10 @@ type Parserer interface {
 The parser object is created by calling the NewParser(lexer.Lexerer) function.
 ```go
 type Parser struct {
-	l         lexer.Lexerer			// Lexer object
-	curToken  constants.Token     	// Current token
-	peekToken constants.Token 		// Next token
-	errors    []string				// List of errors
+	l         lexer.Lexerer		  // Lexer object
+	curToken  constants.Token     // Current token
+	peekToken constants.Token 	  // Next token
+	errors    []string			  // List of errors
 }
 ```
 
@@ -133,9 +133,9 @@ type Parser struct {
 Program is the entry point for the evaluation of the asserts. 
 ```go
 type ProgramEvaluator interface {
-	SetValueMap(map[string]float64)				// Set the value map for the variables	
-	Evaluate() ([]float64, []error, bool)		// Evaluate the asserts
-	PartialEvaluate() ([]string, []error, bool) // Partially evaluate and simplify the asserts without the values of the variables
+	SetValueMap(map[string]float64)				    // Set the value map for the variables	
+	Evaluate() ([]float64, []error, bool)		    // Evaluate the asserts
+	PartialEvaluate() ([]string, []error, bool)     // Partially evaluate and simplify the asserts without the values of the variables
 }
 ```
 
