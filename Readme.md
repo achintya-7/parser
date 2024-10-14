@@ -28,17 +28,20 @@ These are the various asserts that can be validated by the parser.
 A simple example of the parser is as follows:
 ```
 assert x * (2 * 3)
+```
 
-This assert will be evaluated to (x * 6.00)
+This assert will be evaluated to `assert (x * 6.00)`
 
 If we further pass a value-map as 
+```
 {
     x: 0
 }
+```
 
 The expression will be evaluated to 0.00
 As 0 is considered as true value in the parser. The assert will be valid.
-```
+
 
 ## Code Structure
 ```
@@ -126,7 +129,7 @@ type Parser struct {
 }
 ```
 
-## Program
+### Program
 Program is the entry point for the evaluation of the asserts. 
 ```go
 type ProgramEvaluator interface {
@@ -135,6 +138,32 @@ type ProgramEvaluator interface {
 	PartialEvaluate() ([]string, []error, bool) // Partially evaluate and simplify the asserts without the values of the variables
 }
 ```
+
+## Features
+1. The parser is mostly used for validating the asserts. A simple example of an assert is `assert x * (2 * 3)`. 
+2. If the value of x is 0, the assert will be valid as the expression will be evaluated to 0.00.
+3. Multiple asserts can be passed to the parser. The parser will validate all the asserts. If all the asserts are valid, the parser will return true.
+4. Each assert is considered as a statement. The parser will create a list of statements and validate each statement.
+5. The parser comes with 2 main functions `Evaluate()` and `PartialEvaluate()`. 
+	* `Evaluate()` will evaluate the asserts with the given values of the variables. If the asserts are valid, it will return true.
+	* `PartialEvaluate()` will simplify the asserts without the values of the variables. It will return the simplified asserts. Partial evaluation don't require the values of the variables.
+6. The parser can also evaluate the expression with the given values of the variables. The values of the variables can be passed to the parser using the `SetValueMap(map[string]float64)` function.
+7. A partially evaluated assert can be further evaluated with the values of the variables. The parser will try to evaluate the expression with the given values of the variables. Do check out the test cases in `TestDualParser()` in parser_test.go for more details.
+8. The parser can also evaluate basic expressions like `1 + 2 * 3`. The parser will evaluate the expression to `7.00`. It will be marked as failed as the result is not 0.00.
+
+## How to run the parser
+// todo
+
+## Future Improvements
+1. The parser can be further improved to support more arithmetic operations like powers, factorials, log() etc.
+2. Addition of various other operators like OR, AND, XOR, etc.
+3. Better error handling and reporting.
+4. More robust test cases and also better testing for edge cases.
+
+
+
+
+
 
 
 
