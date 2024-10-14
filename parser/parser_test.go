@@ -2,6 +2,7 @@ package parser
 
 import (
 	"parser/lexer"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -23,7 +24,7 @@ func TestParser(t *testing.T) {
 			succeed:         true,
 		},
 		{
-			input:           "assert 1 + 2 * 3 == 5",
+			input:           "assert (1 + 2 * 3) == 5",
 			expectedResults: []float64{1},
 			succeed:         false,
 		},
@@ -61,6 +62,14 @@ func TestParser(t *testing.T) {
 			},
 		},
 		{
+			input:           "assert (x * 6.00)",
+			expectedResults: []float64{0},
+			succeed:         true,
+			valueMap: map[string]float64{
+				"x": 0,
+			},
+		},
+		{
 			input:           "assert x + y == z",
 			expectedResults: []float64{0},
 			succeed:         true,
@@ -81,7 +90,7 @@ func TestParser(t *testing.T) {
 			},
 		},
 		{
-			input:           "assert (x + y) * 4",
+			input:           "assert ((x + y) * 4)",
 			expectedResults: []float64{0},
 			succeed:         true,
 			valueMap: map[string]float64{
@@ -126,22 +135,22 @@ func TestPartialEvaluation(t *testing.T) {
 	testCases := []ParserTestCase{
 		{
 			input:                  "assert x * (2 * 3)",
-			expectedPartialResults: []string{"assert x * 6.00"},
+			expectedPartialResults: []string{"assert (x * 6.00)"},
 			succeed:                true,
 		},
 		{
 			input:                  "assert x * (2 * 3) == 6",
-			expectedPartialResults: []string{"assert x * 6.00 == 6.00"},
+			expectedPartialResults: []string{"assert ((x * 6.00) == 6.00)"},
 			succeed:                true,
 		},
 		{
 			input:                  "assert x * y + (2 * 3)\n assert (z + 2) * 3",
-			expectedPartialResults: []string{"assert x * y + 6.00", "assert z + 2.00 * 3.00"},
+			expectedPartialResults: []string{"assert ((x * y) + 6.00)", "assert ((z + 2.00) * 3.00)"},
 			succeed:                true,
 		},
 		{
 			input:                  "assert !(1 * 0) * x + (5 * 6 - y)",
-			expectedPartialResults: []string{"assert 1.00 * x + 30.00 - y"},
+			expectedPartialResults: []string{"assert ((1.00 * x) + (30.00 - y))"},
 			succeed:                true,
 		},
 	}
@@ -168,19 +177,25 @@ func TestPartialEvaluation(t *testing.T) {
 }
 
 type DualParserTestCase struct {
-	initialInput    string
-	partialEvaluatedInput    []string
-	valueMap        map[string]float64
-	expectedResults []float64
+	initialInput          string
+	partialEvaluatedInput []string
+	valueMap              map[string]float64
+	expectedResults       []float64
 }
 
 func TestDualParser(t *testing.T) {
 	testCases := []DualParserTestCase{
 		{
-			initialInput:    "assert x * (2 * 3)",
-			partialEvaluatedInput:    []string{"assert x * 6.00"},
-			valueMap:        map[string]float64{"x": 0},
-			expectedResults: []float64{0},
+			initialInput:          "assert x * (2 * 3)",
+			partialEvaluatedInput: []string{"assert (x * 6.00)"},
+			valueMap:              map[string]float64{"x": 0},
+			expectedResults:       []float64{0},
+		},
+		{
+			initialInput:          "assert (2 + 6) * (x - 3) \n assert (y + 6) \n assert z * 2",
+			partialEvaluatedInput: []string{"assert (8.00 * (x - 3.00))", "assert (y + 6.00)", "assert (z * 2.00)"},
+			valueMap:              map[string]float64{"x": 3, "y": -6, "z": 0},
+			expectedResults:       []float64{0, 0, 0},
 		},
 	}
 
@@ -203,8 +218,9 @@ func TestDualParser(t *testing.T) {
 		require.True(t, success)
 		require.Equal(t, testCase.partialEvaluatedInput, results)
 
+		combinedResult := strings.Join(results, "\n")
 
-		l = lexer.NewLexer(results[0])
+		l = lexer.NewLexer(combinedResult)
 		p = NewParser(l)
 		program = p.ParseProgram()
 

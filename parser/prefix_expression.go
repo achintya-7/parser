@@ -40,7 +40,7 @@ func (pe *PrefixExpression) PartialEvaluate() (string, error) {
 
 	_, err = IsConstant(right)
 	if err != nil {
-		return fmt.Sprintf("%s%s", pe.Operator, right), nil
+		return fmt.Sprintf("(%s %s)", pe.Operator, right), nil
 	}
 
 	evaluatedValue, err := pe.Evaluate()

@@ -61,6 +61,18 @@ func TestLexer(t *testing.T) {
 				{Type: constants.TOKEN_EOF, Lexeme: "", Line: 1},
 			},
 		},
+		{
+			input: "assert (x * 6.00)",
+			expected: []constants.Token{
+				{Type: constants.TOKEN_VARIABLE, Lexeme: "assert", Line: 1},
+				{Type: constants.TOKEN_LEFT_PAREN, Lexeme: "(", Line: 1},
+				{Type: constants.TOKEN_VARIABLE, Lexeme: "x", Line: 1},
+				{Type: constants.TOKEN_MULTIPLY, Lexeme: "*", Line: 1},
+				{Type: constants.TOKEN_NUMBER, Lexeme: "6.00", Line: 1},
+				{Type: constants.TOKEN_RIGHT_PAREN, Lexeme: ")", Line: 1},
+				{Type: constants.TOKEN_EOF, Lexeme: "", Line: 1},
+			},
+		},
 	}
 
 	for _, tt := range tests {

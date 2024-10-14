@@ -111,15 +111,17 @@ func (l *Lexer) NewToken() constants.Token {
 }
 
 func (l *Lexer) readNumber() string {
-	currentPosition := l.position
-
-	for unicode.IsDigit(rune(l.ch)) {
+	position := l.position
+	seenDot := false
+	for l.isDigit(l.ch) || (l.ch == '.' && !seenDot) {
+		if l.ch == '.' {
+			seenDot = true
+		}
 		l.readChar()
 	}
-
-	return l.input[currentPosition:l.position]
-
+	return l.input[position:l.position]
 }
+
 func (l *Lexer) readVariable() string {
 	currentPosition := l.position
 
@@ -145,4 +147,8 @@ func (l *Lexer) skipWhitespace() {
 		}
 		l.readChar()
 	}
+}
+
+func (l *Lexer) isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }

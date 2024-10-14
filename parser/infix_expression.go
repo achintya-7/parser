@@ -28,12 +28,12 @@ func (ie *InfixExpression) PartialEvaluate() (string, error) {
 
 	_, err = IsConstant(left)
 	if err != nil {
-		return fmt.Sprintf("%s %s %s", left, ie.Operator, right), nil
+		return fmt.Sprintf("(%s %s %s)", left, ie.Operator, right), nil
 	}
 
 	_, err = IsConstant(right)
 	if err != nil {
-		return fmt.Sprintf("%s %s %s", left, ie.Operator, right), nil
+		return fmt.Sprintf("(%s %s %s)", left, ie.Operator, right), nil
 	}
 
 	evaluatedValue, err := ie.Evaluate()
