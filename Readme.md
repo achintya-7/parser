@@ -239,6 +239,24 @@ Program:
                     NumberLiteral: 2.00
 ```
 
+The output of partial evaluation will be as follows:
+```
+Evaluating statement 1
+Result: assert (8.00 * (x - 3.00))
+
+
+Evaluating statement 2
+Result: assert (y + 6.00)
+
+
+Evaluating statement 3
+Result: assert (z * 2.00)
+
+Simplified results :-
+assert (8.00 * (x - 3.00))
+assert (y + 6.00)
+assert (z * 2.00)
+```
 
 This part of the code will add the valueMap to the parser and evaluate the asserts with the given values of the variables. It can use the original asserts or even the `partiallyEvaluated` resposes as well. The parser will return `isSuccess` as true if all the asserts are valid or false if any of the assert is invalid.
 ```go
