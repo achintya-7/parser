@@ -31,17 +31,15 @@ func (p *Parser) Errors() []string {
 }
 
 func (p *Parser) printAST(node any) {
-	switch n := node.(type) {
-	case *Program:
-		fmt.Println("Program:")
-		for _, stmt := range n.Statements {
-			fmt.Printf("  -> %s\n", stmt.String())
-		}
-	case Expression:
-		fmt.Printf("Expression: %s\n", n.String())
-	default:
-		fmt.Println("Unknown node type")
-	}
+    visitor := NewPrintVisitor()
+    switch n := node.(type) {
+    case *Program:
+        visitor.VisitProgram(n, 0)
+    case Expression:
+        visitor.VisitExpression(n, 0)
+    default:
+        fmt.Println("Unknown node type")
+    }
 }
 
 func (p *Parser) ParseProgram() ProgramEvaluator {
@@ -52,10 +50,12 @@ func (p *Parser) ParseProgram() ProgramEvaluator {
 		stmt := p.parseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
-			fmt.Println()
 		}
 		p.nextToken()
 	}
+
+	fmt.Println("AST :-")
+	p.printAST(program)
 
 	return program
 }
@@ -98,8 +98,6 @@ func (p *Parser) parseExpression(precedence int) Expression {
 
 		leftExp = infix(leftExp)
 	}
-
-	p.printAST(leftExp)
 
 	return leftExp
 }

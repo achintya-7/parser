@@ -45,8 +45,15 @@ type Parserer interface {
 	curPrecedence() int
 }
 
+// Program Evaluator Interface
 type ProgramEvaluator interface {
 	SetValueMap(map[string]float64)
 	Evaluate() ([]float64, []error, bool)
 	PartialEvaluate() ([]string, []error, bool)
+}
+
+// AST PrintVisitor Interface
+type PrintVisitor interface {
+	VisitProgram(*Program, int)
+	VisitExpression(Expression, int)
 }

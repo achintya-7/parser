@@ -55,8 +55,6 @@ func (ie *InfixExpression) Evaluate() (float64, error) {
 		return -1, err
 	}
 
-	fmt.Printf("Evaluating: %s %s %s\n", ie.Left.String(), ie.Operator, ie.Right.String())
-
 	switch ie.Operator {
 	case "+":
 		return left + right, nil

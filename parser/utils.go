@@ -1,6 +1,9 @@
 package parser
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 func IsConstant(token string) (float64, error) {
 	floatValue, err := strconv.ParseFloat(token, 64)
@@ -9,4 +12,10 @@ func IsConstant(token string) (float64, error) {
 	}
 
 	return floatValue, nil
+}
+
+func printIndent(indent int) {
+	for i := 0; i < indent; i++ {
+		fmt.Print("    ")
+	}
 }
