@@ -139,6 +139,17 @@ type ProgramEvaluator interface {
 }
 ```
 
+### PrintVisitor
+PrintVisitor is a simple visitor that prints the AST of the parser. It uses the Visitor pattern to traverse the AST and print the nodes. The indentation is used to show the depth of the nodes in the AST and is increased recursively as we go deeper into the AST. It's invoked after all the statements are parsed.
+
+```go
+type PrintVisitor interface {
+	VisitProgram(*Program, int) // Goes inside a program and tries to print the statements inside it
+	VisitExpression(Expression, int) // Goes inside an expression and tries to print the nodes inside as per the type of the node, i.e. prefix, infix, etc.
+}
+
+```
+
 ## Features
 1. The parser is mostly used for validating the asserts. A simple example of an assert is `assert x * (2 * 3)`. 
 2. If the value of x is 0, the assert will be valid as the expression will be evaluated to 0.00.
@@ -187,6 +198,46 @@ for _, result := range simplifiedResult {
 
 ```
 
+It also generates and prints out the AST using the PrintVisitor which uses the Visitor pattern to traverse the AST and print the nodes. Here is the partial evalution result of the AST for the above asserts.
+```
+AST :-
+Program:
+    -> Statement:
+        AssertStatement:
+            InfixExpression:
+                Left:
+                    InfixExpression:
+                        Left:
+                            NumberLiteral: 2.00
+                        Operator: +
+                        Right:
+                            NumberLiteral: 6.00
+                Operator: *
+                Right:
+                    InfixExpression:
+                        Left:
+                            Variable: x
+                        Operator: -
+                        Right:
+                            NumberLiteral: 3.00
+    -> Statement:
+        AssertStatement:
+            InfixExpression:
+                Left:
+                    Variable: y
+                Operator: +
+                Right:
+                    NumberLiteral: 6.00
+    -> Statement:
+        AssertStatement:
+            InfixExpression:
+                Left:
+                    Variable: z
+                Operator: *
+                Right:
+                    NumberLiteral: 2.00
+```
+
 
 This part of the code will add the valueMap to the parser and evaluate the asserts with the given values of the variables. It can use the original asserts or even the `partiallyEvaluated` resposes as well. The parser will return `isSuccess` as true if all the asserts are valid or false if any of the assert is invalid.
 ```go
@@ -209,6 +260,25 @@ if !isSuccess {
 }
 
 fmt.Println("Asserts Passed [✓]")
+```
+
+For the above asserts and valueMap, the parser will return the following output. All the asserts will be satisfied and will get result as 0, thus the parser will return `Asserts Passed [✓]`.
+```
+Evaluating statement 1
+Assert value: 0
+Result: 0.000000
+
+
+Evaluating statement 2
+Assert value: 0
+Result: 0.000000
+
+
+Evaluating statement 3
+Assert value: 0
+Result: 0.000000
+
+Asserts Passed [✓]
 ```
 
 Also check out the test cases in parser_test.go for more examples and use cases.

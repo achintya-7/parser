@@ -49,7 +49,7 @@ func (pv *PrintVisitorStruct) VisitExpression(e Expression, indent int) {
 
 	case *NumberLiteral:
 		printIndent(indent)
-		fmt.Printf("NumberLiteral: %f\n", expr.Value)
+		fmt.Printf("NumberLiteral: %.2f\n", expr.Value)
 
 	case *Variable:
 		printIndent(indent)
