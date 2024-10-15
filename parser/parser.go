@@ -52,6 +52,7 @@ func (p *Parser) ParseProgram() ProgramEvaluator {
 		stmt := p.parseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
+			fmt.Println()
 		}
 		p.nextToken()
 	}

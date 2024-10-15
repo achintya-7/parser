@@ -210,15 +210,15 @@ func TestDualParser(t *testing.T) {
 			continue
 		}
 
-		if len(testCase.valueMap) > 0 {
-			program.SetValueMap(testCase.valueMap)
-		}
-
 		results, _, success := program.PartialEvaluate()
 		require.True(t, success)
 		require.Equal(t, testCase.partialEvaluatedInput, results)
 
 		combinedResult := strings.Join(results, "\n")
+
+		if len(testCase.valueMap) > 0 {
+			program.SetValueMap(testCase.valueMap)
+		}
 
 		l = lexer.NewLexer(combinedResult)
 		p = NewParser(l)

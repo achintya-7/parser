@@ -22,10 +22,10 @@ func (p *Program) Evaluate() ([]float64, []error, bool) {
 	success := true
 
 	for i, stmt := range p.Statements {
-		fmt.Printf("Evaluating statement %d: %s\n", i, stmt.String())
+		fmt.Printf("\nEvaluating statement %d: %s\n", i + 1, stmt.String())
 
 		result, err := stmt.Evaluate()
-		fmt.Printf("Result: %f\n", result)
+		fmt.Printf("Result: %f\n\n", result)
 		if err != nil {
 			success = false
 			errs = append(errs, fmt.Errorf("error evaluating statement %d: %s", i, err))
@@ -43,10 +43,10 @@ func (p *Program) PartialEvaluate() ([]string, []error, bool) {
 	success := true
 
 	for i, stmt := range p.Statements {
-		fmt.Printf("Evaluating statement %d: %s\n", i, stmt.String())
+		fmt.Printf("\nEvaluating statement %d: %s\n", i + 1, stmt.String())
 
 		result, err := stmt.PartialEvaluate()
-		fmt.Printf("Result: %s\n", result)
+		fmt.Printf("Result: %s\n\n", result)
 		if err != nil {
 			success = false
 			errs = append(errs, fmt.Errorf("error evaluating statement %d: %s", i, err))
