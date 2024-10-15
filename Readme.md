@@ -59,6 +59,7 @@ As 0 is considered as true value in the parser. The assert will be valid.
 │   ├── parser_test.go       [Test cases for the parser]
 │   ├── parser.go            [Parser implementation]
 │   ├── prefix_expression.go [Prefix Node for the parser]
+│   ├── print_visitor.go     [For printing the AST using the Visitor pattern]
 │   ├── program.go           [Entry point for evalutations of the asserts]  
 │   ├── types.go             [Interfaces for the Node and various types]
 │   └── utils.go             [Utility functions for the parser]
