@@ -152,7 +152,66 @@ type ProgramEvaluator interface {
 8. The parser can also evaluate basic expressions like `1 + 2 * 3`. The parser will evaluate the expression to `7.00`. It will be marked as failed as the result is not 0.00.
 
 ## How to run the parser
-// todo
+Add your asserts and valueMap if any in the main.go 
+```go
+assertValues := `
+	assert (2 + 6) * (x - 3) 
+	assert (y + 6) 
+	assert z * 2
+`
+valueMap := map[string]float64{
+	"x": 3, 
+	"y": -6, 
+	"z": 0,
+}
+```
+
+This part of the code will create a lexer and parser object. It will partially evaluate the asserts and print the simplified results.
+```go
+l := lexer.NewLexer(assertValues)
+p := parser.NewParser(l)
+program := p.ParseProgram()
+
+simplifiedResult, errors, isSuccess := program.PartialEvaluate()
+if !isSuccess {
+	for _, err := range errors {
+		fmt.Println(err)
+	}
+	os.Exit(1)
+}
+
+fmt.Println("Simplified results :-")
+for _, result := range simplifiedResult {
+	fmt.Println(result)
+}
+
+```
+
+
+This part of the code will add the valueMap to the parser and evaluate the asserts with the given values of the variables. It can use the original asserts or even the `partiallyEvaluated` resposes as well. The parser will return `isSuccess` as true if all the asserts are valid or false if any of the assert is invalid.
+```go
+fmt.Println("\nAdding value map for the asserts")
+
+program.SetValueMap(valueMap)
+fmt.Println()
+
+l = lexer.NewLexer(combinedPartialResults)
+p = parser.NewParser(l)
+program = p.ParseProgram()
+
+_, errors, isSuccess = program.Evaluate()
+if !isSuccess {
+	for _, err := range errors {
+		fmt.Println(err)
+	}
+	fmt.Println("Asserts Failed [X]")
+	os.Exit(1)
+}
+
+fmt.Println("Asserts Passed [✓]")
+```
+
+Also check out the test cases in parser_test.go for more examples and use cases.
 
 ## Future Improvements
 1. The parser can be further improved to support more arithmetic operations like powers, factorials, log() etc.
